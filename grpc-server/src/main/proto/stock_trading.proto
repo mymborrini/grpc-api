@@ -1,0 +1,25 @@
+
+syntax = "proto3";
+
+// I want to use grpc to generate the individual classes
+package stock_trading;
+option java_multiple_files=true;
+option java_package="com.skynet.grpc_server";
+option java_outer_classname="StockTradingProto";
+
+service StockTradingService{
+
+  // Unary - RPC -> get current stock price
+  rpc getStockPrice(StockRequest) returns (StockResponse);
+}
+
+// The number at the end is the symbol
+message StockRequest{
+  string stock_symbol=1;
+}
+
+message StockResponse{
+  string stock_symbol=1;
+  double price=2;
+  string timestamp=3;
+}
