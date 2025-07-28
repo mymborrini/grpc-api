@@ -33,6 +33,7 @@ Why in this case would need a stream? Because the stock price change every secon
 the server continue sending it updates one every second for example.
 
 So how to do it? First we have to tell the .proto file about we want to have a streaming rpc connection
+Then in this case to simulate a server business logic we will make the thread sleep for 1 second
 
 ## Client
 
@@ -82,3 +83,12 @@ Then in the `application.yml` you define the following structure to be sure that
                 negotiation-type: PLAINTEXT
 
 As you can see the `stockService` named is defined here to configure the address and the negotiation-type
+
+### Server Streaming
+
+Since it's a service streaming we cannot use a *blocking* stub. We can use a normal stub, something like the following
+
+    @GrpcClient("stockService")
+    private StockTradingServiceGrpc.StockTradingServiceStub serviceStub;
+
+This is a stub to allow clients to do async tpc calls to service
