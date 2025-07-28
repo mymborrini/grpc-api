@@ -11,6 +11,10 @@ service StockTradingService{
 
   // Unary - RPC -> get current stock price
   rpc getStockPrice(StockRequest) returns (StockResponse);
+
+  // Server Streaming - RPC
+  rpc subscribeStockPrice(StockRequest) returns (stream StockResponse);
+
 }
 
 // The number at the end is the symbol
