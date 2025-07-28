@@ -35,6 +35,13 @@ the server continue sending it updates one every second for example.
 So how to do it? First we have to tell the .proto file about we want to have a streaming rpc connection
 Then in this case to simulate a server business logic we will make the thread sleep for 1 second
 
+
+### Client Streaming
+
+Why in this case I would need a client stream? Because I want to place an order every second for a specific period of time, and
+I want the server to respond me OK once every order is placed. And after that the server can return an Order Summary. 
+
+
 ## Client
 
 Spring boot right now does not have a client for grpc so we have to remove these two dependencies
@@ -92,3 +99,4 @@ Since it's a service streaming we cannot use a *blocking* stub. We can use a nor
     private StockTradingServiceGrpc.StockTradingServiceStub serviceStub;
 
 This is a stub to allow clients to do async tpc calls to service
+

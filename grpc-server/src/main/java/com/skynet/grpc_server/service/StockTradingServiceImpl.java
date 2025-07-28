@@ -1,13 +1,11 @@
 package com.skynet.grpc_server.service;
 
-import com.skynet.grpc_server.StockRequest;
-import com.skynet.grpc_server.StockResponse;
-import com.skynet.grpc_server.StockResponseOrBuilder;
-import com.skynet.grpc_server.StockTradingServiceGrpc;
+import com.skynet.grpc_server.*;
 import com.skynet.grpc_server.model.Stock;
 import io.grpc.stub.StreamObserver;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.grpc.server.service.GrpcService;
 
 import java.time.Instant;
@@ -63,8 +61,46 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
     } catch (InterruptedException e) {
       log.error(e.getMessage());
       responseObserver.onError(e);
+    } finally {
+      // Send the ACK back to the client
+      responseObserver.onCompleted();
     }
+  }
 
 
+  @Override
+  public StreamObserver<StockOrder> bulkStockOrder(StreamObserver<OrderSummary> responseObserver) {
+      return new StreamObserver<StockOrder>() {
+
+        // I defined it here, of course in a production it would be better to use a persistence db
+        private int totalOrders=0;
+        private double totalAmount=0;
+        private int successCount=0;
+
+        @Override
+        public void onNext(StockOrder stockOrder) {
+          totalOrders++;
+          totalAmount += stockOrder.getPrice() * stockOrder.getQuantity();
+          successCount++;
+          log.info("Received order: {}", stockOrder);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+          log.error("Server unable to process the request: {}", throwable.getMessage());
+        }
+
+        @Override
+        public void onCompleted() {
+          OrderSummary orderSummary = OrderSummary.newBuilder()
+                  .setTotalOrders(totalOrders)
+                  .setTotalAmount(totalAmount)
+                  .setSuccessCount(successCount).build();
+
+          responseObserver.onNext(orderSummary);
+          // Send the ack back to the client
+          responseObserver.onCompleted();
+        }
+      };
   }
 }
