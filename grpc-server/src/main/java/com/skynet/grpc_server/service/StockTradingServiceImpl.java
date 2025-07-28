@@ -132,7 +132,9 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
                 .build();
 
         responseObserver.onNext(tradeStatus);
-        TimeUnit.SECONDS.sleep(new Random().nextLong(5));
+        long sleepDuration = new Random().nextLong(5);
+        log.info("This order will be executed in {} seconds", sleepDuration);
+        TimeUnit.SECONDS.sleep(sleepDuration);
       }
 
       @Override
@@ -142,8 +144,9 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
 
       @Override
       public void onCompleted() {
-        log.info("Server unable to process the request");
+        log.info("Connection stopped requested by the client");
         responseObserver.onCompleted();
+        log.info("Connection stopped successfully");
       }
     };
   }

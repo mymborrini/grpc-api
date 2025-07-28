@@ -36,8 +36,10 @@ public class GrpcClientApplication implements CommandLineRunner {
 			stockClientService.subscribeStockPrice(stockSymbol);
 		} */
 
-		stockClientService.placeBulkOrders();
+		//stockClientService.placeBulkOrders();
 
+
+		stockClientService.liveTrading();
 
 	}
 }
