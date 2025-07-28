@@ -23,7 +23,9 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
   public void getStockPrice(StockRequest request, StreamObserver<StockResponse> responseObserver) {
 
     // Initialize Stocks
-    stocks.put("1", new Stock().setPrice(23.3).setTimeStamp("1234565"));
+    stocks.put("GOOGLE", new Stock().setPrice(24.1).setTimeStamp("12345635"));
+    stocks.put("APPLE", new Stock().setPrice(33.3).setTimeStamp("987654332"));
+    stocks.put("TESLA", new Stock().setPrice(15.6).setTimeStamp("123987045"));
 
     // In the request you find stockSymbol -> get if from the map response -> return
 
