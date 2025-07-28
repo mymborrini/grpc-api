@@ -78,11 +78,13 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
         private int successCount=0;
 
         @Override
+        @SneakyThrows
         public void onNext(StockOrder stockOrder) {
           totalOrders++;
           totalAmount += stockOrder.getPrice() * stockOrder.getQuantity();
           successCount++;
           log.info("Received order: {}", stockOrder);
+          TimeUnit.SECONDS.sleep(1);
         }
 
         @Override

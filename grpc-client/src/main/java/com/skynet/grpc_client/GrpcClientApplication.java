@@ -24,7 +24,7 @@ public class GrpcClientApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		var stockSymbolList = List.of("GOOGLE", "APPLE", "TESLA");
+/* 		var stockSymbolList = List.of("GOOGLE", "APPLE", "TESLA");
 
 		for (String stockSymbol : stockSymbolList){
 			log.info("Contact Grpc Server getStockPrice for Stock Symbol: {} => Response: {}", stockSymbol,  stockClientService.getStockPrice(stockSymbol));
@@ -34,7 +34,9 @@ public class GrpcClientApplication implements CommandLineRunner {
 
 		for (String stockSymbol : stockSymbolList) {
 			stockClientService.subscribeStockPrice(stockSymbol);
-		}
+		} */
+
+		stockClientService.placeBulkOrders();
 
 
 	}

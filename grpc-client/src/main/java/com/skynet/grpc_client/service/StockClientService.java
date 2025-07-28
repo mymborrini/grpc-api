@@ -1,12 +1,15 @@
 package com.skynet.grpc_client.service;
 
-import com.skynet.grpc_server.StockRequest;
-import com.skynet.grpc_server.StockResponse;
-import com.skynet.grpc_server.StockTradingServiceGrpc;
+import com.skynet.grpc_server.*;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -47,6 +50,60 @@ public class StockClientService  {
         log.info("Stock Server subScribe rpc completed");
       }
     });
+
+  }
+
+  public void placeBulkOrders(){
+
+    StreamObserver<OrderSummary> responseObserver = new StreamObserver<>() {
+
+      @Override
+      public void onNext(OrderSummary orderSummary) {
+        // For some reason logs does not work here
+        System.out.println("Order Summary Received from Server:");
+        System.out.println("Total Orders: " + orderSummary.getTotalOrders());
+        System.out.println("Successful Orders: " + orderSummary.getSuccessCount());
+        System.out.println("Total Amount: $" + orderSummary.getTotalAmount());
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        System.err.println("Error placed Orders");
+      }
+
+      @Override
+      public void onCompleted() {
+        System.out.println("Orders Placed. Ack received");
+      }
+    };
+
+    StreamObserver<StockOrder> requestStockOrderObserver = serviceStub.bulkStockOrder(responseObserver);
+
+    // Send stream of stock order message/request
+
+    var stockSymbols = List.of("GOOGLE", "APPLE", "TESLA");
+    try {
+
+      int count=1;
+      for (String stockSymbol : stockSymbols) {
+        requestStockOrderObserver.onNext(
+                StockOrder.newBuilder()
+                        .setOrderId(String.valueOf(count))
+                        .setStockSymbol(stockSymbol)
+                        .setOrderType(new Random().nextBoolean() ? "SELL" : "BUY")
+                        .setPrice(new Random().nextDouble(200))
+                        .setQuantity(new Random().nextInt(10))
+                        .build());
+        count++;
+      }
+
+      // Sending ACK
+      requestStockOrderObserver.onCompleted();
+
+    } catch (Exception e){
+        log.error("Error placed Orders", e);
+        requestStockOrderObserver.onError(e);
+    }
 
   }
 
