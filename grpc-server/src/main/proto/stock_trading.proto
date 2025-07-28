@@ -18,6 +18,9 @@ service StockTradingService{
   // Client Streaming - RPC -> place multiple stock orders
   rpc bulkStockOrder(stream StockOrder) returns (OrderSummary);
 
+  // Bidirectional Streaming - RPC -> live trading
+  rpc liveTrading(stream StockOrder) returns (stream TradeStatus);
+
 }
 
 // The number at the end is the symbol
@@ -43,4 +46,11 @@ message OrderSummary {
   int32 total_orders=1;
   double total_amount=2;
   int32 success_count=3;
+}
+
+message TradeStatus {
+  string order_id=1;
+  string  status=2; // execute, failed, pending
+  string  message=3; // reason if failed or success
+  string timestamp=4;
 }

@@ -35,12 +35,21 @@ the server continue sending it updates one every second for example.
 So how to do it? First we have to tell the .proto file about we want to have a streaming rpc connection
 Then in this case to simulate a server business logic we will make the thread sleep for 1 second
 
+    method -> subscribeStockPrice
 
 ### Client Streaming
 
 Why in this case I would need a client stream? Because I want to place an order every second for a specific period of time, and
 I want the server to respond me OK once every order is placed. And after that the server can return an Order Summary. 
 
+    method -> bulkStockOrder
+
+### Bidirectional
+
+When I need bidirectional? For example client has to monitor the stock in a continues way. so it will send many requests and for each one of that
+(not necessary in the order they arrive) the server responds. So client and server will stream data to each other, without blocking each other.
+
+    method -> 
 
 ## Client
 

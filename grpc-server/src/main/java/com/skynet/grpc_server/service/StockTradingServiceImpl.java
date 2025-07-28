@@ -9,6 +9,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.grpc.server.service.GrpcService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -104,5 +106,45 @@ public class StockTradingServiceImpl extends StockTradingServiceGrpc.StockTradin
           responseObserver.onCompleted();
         }
       };
+  }
+
+  @Override
+  public StreamObserver<StockOrder> liveTrading(StreamObserver<TradeStatus> responseObserver) {
+    return new StreamObserver<StockOrder>() {
+
+      @SneakyThrows
+      @Override
+      public void onNext(StockOrder stockOrder) {
+        log.info("Received order: {}", stockOrder);
+        String status = "EXECUTED";
+        String message = "Order " + stockOrder.getStockSymbol() + " is executed";
+
+        if (stockOrder.getQuantity() <= 0){
+          status = "FAILED";
+          message = "Order " + stockOrder.getStockSymbol() + " has no quantity. Invalid quantity";
+        }
+
+        TradeStatus tradeStatus = TradeStatus.newBuilder()
+                .setOrderId(stockOrder.getOrderId())
+                .setStatus(status)
+                .setMessage(message)
+                .setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE))
+                .build();
+
+        responseObserver.onNext(tradeStatus);
+        TimeUnit.SECONDS.sleep(new Random().nextLong(5));
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        log.error("Server unable to process the request: {}", throwable.getMessage());
+      }
+
+      @Override
+      public void onCompleted() {
+        log.info("Server unable to process the request");
+        responseObserver.onCompleted();
+      }
+    };
   }
 }
