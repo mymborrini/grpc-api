@@ -1,0 +1,7 @@
+# Enable reflection true is similar to the swagger in rest
+spring:
+  grpc:
+    server:
+      port: 9090
+      reflection:
+        enabled: true
