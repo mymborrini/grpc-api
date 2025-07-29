@@ -111,5 +111,34 @@ This is a stub to allow clients to do async tpc calls to service
 
 ### Client Streaming
 
+### Bidirectional
 
+
+## Load Balancing 
+
+There are two types of loadBalancing:
+
+ - Server side
+ - Client side
+
+![img.png](load_balancing.png)
+
+
+We use *Server Side*. So first in the folder resources/tls we generate a self-signed certificate
+
+    openssl req -x509 -nodes -newkey rsa:4096 \
+        -keyout server.key \
+        -out server.crt \
+        -days 365 \
+        -subj "/CN=localhost"
+
+Then we configure your spring boot grpc server
+
+    grpc:
+        server:
+            security:
+                enabled: true
+                certificate-chain: classpath:tls/server.crt
+                private-key: classpath:tls/server.key
+            port: 9090
 

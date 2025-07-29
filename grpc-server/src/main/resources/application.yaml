@@ -2,6 +2,23 @@
 spring:
   grpc:
     server:
+      ssl:
+        enabled: true
+        bundle: web-server
       port: 9090
       reflection:
         enabled: true
+  ssl:
+    bundle:
+      pem:
+        web-server:
+          keystore:
+            certificate: classpath:tls/server.crt
+            private-key: classpath:tls/server.key
+
+
+
+
+custom:
+  tls: false
+  application_id: albert

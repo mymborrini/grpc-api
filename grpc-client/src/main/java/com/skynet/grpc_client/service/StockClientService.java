@@ -18,7 +18,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Slf4j
 public class StockClientService  {
 
   // BlockingStub is thought specifically for UNARY
@@ -41,19 +40,19 @@ public class StockClientService  {
       @Override
       public void onNext(StockResponse stockResponse) {
         // This will be responsible to fetch each response of the server
-        log.info("New Response receive from Stock Server: {}", stockResponse);
+        System.out.println("New Response receive from Stock Server: " + stockResponse);
       }
 
       @Override
       public void onError(Throwable throwable) {
         // This will be responsible to fetch the errors
-        log.error("Error received from Stock Server", throwable);
+       System.err.println("Error received from Stock Server " + throwable);
       }
 
       @Override
       public void onCompleted() {
         // This will be called when everything is completed
-        log.info("Stock Server subScribe rpc completed");
+        System.out.println("Stock Server subScribe rpc completed");
       }
     });
 
@@ -107,13 +106,12 @@ public class StockClientService  {
       requestStockOrderObserver.onCompleted();
 
     } catch (Exception e){
-        log.error("Error placed Orders", e);
+       System.err.println("Error placed Orders " + e);
         requestStockOrderObserver.onError(e);
     }
 
   }
 
-  @SneakyThrows
   public void liveTrading(){
 
     Map<String, Instant>  liveTradingRequestsTimes = new HashMap<>();
@@ -161,10 +159,15 @@ public class StockClientService  {
       liveTradingRequestsTimes.put(stockOrder.getOrderId(), Instant.now());
 
       requestObserver.onNext(stockOrder);
-      TimeUnit.SECONDS.sleep(1);
+      try {
+        TimeUnit.SECONDS.sleep(1);
+      }
+      catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
 
-    log.info("20 request done. The connection with Server can be closed");
+    System.out.println("20 request done. The connection with Server can be closed");
     requestObserver.onCompleted();
 
 
