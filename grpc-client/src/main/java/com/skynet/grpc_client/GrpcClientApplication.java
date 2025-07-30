@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class GrpcClientApplication implements CommandLineRunner {
@@ -34,16 +35,26 @@ public class GrpcClientApplication implements CommandLineRunner {
 			System.out.println("Contact Grpc Server getStockPrice for Stock Symbol: " + stockSymbol + " => Response: " +  stockClientService.getStockPrice(stockSymbol));
 		}
 
-		/*log.info("Invoke the subscribe Stock Method");
+
+		System.out.println("Unary Method completed waiting 70 seconds...");
+		TimeUnit.SECONDS.sleep(70);
+		System.out.println("Invoke the subscribe Stock Method");
 
 		for (String stockSymbol : stockSymbolList) {
 			stockClientService.subscribeStockPrice(stockSymbol);
-		} */
+		}
 
-		// stockClientService.placeBulkOrders();
+		System.out.println("Server streaming Method completed waiting 70 seconds...");
+		TimeUnit.SECONDS.sleep(70);
+		System.out.println("Invoke the place bulk orders Method");
 
+		stockClientService.placeBulkOrders();
 
-		//stockClientService.liveTrading();
+		System.out.println("Client streaming Method completed waiting 70 seconds...");
+		TimeUnit.SECONDS.sleep(70);
+		System.out.println("Invoke the live trading Method");
+		stockClientService.liveTrading();
 
+		System.out.println("Bidirectional Method completed");
 	}
 }

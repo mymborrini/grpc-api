@@ -19,6 +19,5 @@ spring:
 
 
 
-custom:
-  tls: false
-  application_id: albert
+app:
+  custom-message: ${MY_CUSTOM_MESSAGE:default-message}

@@ -142,3 +142,9 @@ Then we configure your spring boot grpc server
                 private-key: classpath:tls/server.key
             port: 9090
 
+### Nginx conf
+
+In nginx config we need to specify the protocol version after the port the server is listening.
+
+    server {
+        listen 80 http2;

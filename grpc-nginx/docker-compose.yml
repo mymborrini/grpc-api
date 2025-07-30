@@ -1,0 +1,31 @@
+services:
+  nginx:
+    image: nginx:1.29.0
+    ports:
+      - "8085:80"
+    environment:
+      - NGINX_PORT=80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+  grpc-server-1:
+    hostname: grpc-server-1
+    build:
+      context: ./../grpc-server
+      dockerfile: Dockerfile
+    environment:
+      - MY_CUSTOM_MESSAGE="Hello!! This is grpc-server-1"
+    ports:
+      - "8086:9090"
+  grpc-server-2:
+    hostname: grpc-server-2
+    build:
+      context: ./../grpc-server
+      dockerfile: Dockerfile
+    environment:
+      - MY_CUSTOM_MESSAGE="Hello!! This is grpc-server-2"
+    ports:
+      - "8087:9090"
+
+
+
