@@ -121,7 +121,7 @@ There are two types of loadBalancing:
  - Server side
  - Client side
 
-![img.png](load_balancing.png)
+![img.png](./images/load_balancing.png)
 
 
 We use *Server Side*. So first in the folder resources/tls we generate a self-signed certificate
