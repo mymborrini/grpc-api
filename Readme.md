@@ -158,3 +158,22 @@ In case we want to use mTLS we need to specify the client certificate like this 
         ssl_client_certificate [path]
         ssl_verify_client on;
 
+
+In case of a layer 7 if we need to have an application that still has a tls termination. We have to make a decryption first and the encrypt again 
+to the server. To do this, what remains in our case is to encrypt the connection to the servers again. First we have to add an s and the end of grpc protocol
+in the location part.
+
+    location / {
+        grpc_pass grpcs://grpc_services;
+    }
+
+In case we want to use mutual tls we have to add the following
+
+    location / {
+
+        grpc_pass grpcs://grpc_services;
+        
+        # Mutual TLS between ngxin and grpc
+        grpc_ssl_certificate cert/server.crt;
+        grpc_ssl_certificate_key cert/server.key;
+    }

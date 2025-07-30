@@ -1,7 +1,7 @@
 grpc:
   client:
     stockService:
-      address: "static://localhost:8085"
+      address: "static://localhost:8087"
       negotiation-type: TLS
       security:
         trust-cert-collection: classpath:tls/server.crt
