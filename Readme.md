@@ -144,7 +144,17 @@ Then we configure your spring boot grpc server
 
 ### Nginx conf
 
+In case of layer 7 the tls termination occurs in the load balancers.
 In nginx config we need to specify the protocol version after the port the server is listening.
 
     server {
-        listen 80 http2;
+        listen 80 ssl http2;
+
+        ssl_certificate cert/server.crt;
+        ssl_certificate_key cert/server.key;
+
+In case we want to use mTLS we need to specify the client certificate like this and specify the ssl_verify_client as well. 
+    
+        ssl_client_certificate [path]
+        ssl_verify_client on;
+
